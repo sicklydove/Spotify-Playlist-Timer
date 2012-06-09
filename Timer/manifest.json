@@ -1,0 +1,21 @@
+{
+	"AppDescription": {
+		"en": "A music-based timer"
+	},
+	"AppIcon": {
+		"36x18": "tutorial.png"
+	},
+	"AppName": {
+		"en": "timer"
+	},
+	"BundleIdentifier": "timer",
+	"BundleType": "Application",
+	"BundleVersion": "0.1",
+	"RequiredInterface": 1,
+	"RequiredPermissions": [
+	],
+	"SupportedLanguages": [
+		"en"
+	],
+	"VendorIdentifier": "farragar"
+}
