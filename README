@@ -1,0 +1,11 @@
+This app is currently *VERY* work-in-progress.
+
+Source (scripts.js) is a proof-of-concept algorithm. It works, it's fast, and it's accurate (+/-2 seconds, based on my ~4k tracks playlist).
+
+BUT: No real frontend, & code is messy.
+
+
+TODO: 
+Make a frontend!
+Clean up code
+Use absolute values when testing distance from optimal

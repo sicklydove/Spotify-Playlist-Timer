@@ -14,48 +14,48 @@ function evalTime(){
   var tracksOut=[];
   var form=document.getElementById("timeInput");
 
-  var hours=form.hours.value;
-  var mins=form.mins.value;
-  var secs=form.secs.value;
+  var hours=parseInt(form.hours.value);
+  var mins=parseInt(form.mins.value);
+  var secs=parseInt(form.secs.value);
 
-  var tSecs=secs+(60*mins)+(3600*hours);
-  var targetMillis=1000*tSecs;
-
-  var targetMillis=120*60*1000;
-
+  var targetSecs=secs+(60*mins)+(3600*hours);
+  var targetMillis=targetSecs*1000;
   var trackLib=lib.tracks;
-  var libTotalMillis=0;
   var numTracks=trackLib.length;
 
+  var libTotalMillis=0;
   for (var i in trackLib){
     libTotalMillis+=trackLib[i].duration;
   }
-  var libMeanMillis=libTotalMillis/trackLib.length;
+  var meanTrackLen=libTotalMillis/trackLib.length;
 
-  var meanDist=targetMillis/libMeanMillis;
-
+  //While the target time is far away (>5 mean track lengths), pick randomly
   var newTargetMillis=targetMillis;
-  while(newTargetMillis>3*libMeanMillis){
+  while(newTargetMillis>3*meanTrackLen){
     var rand=Math.floor(Math.random()*numTracks);
     var item=trackLib[rand];
     var itemLen=item.duration;
-    if(newTargetMillis-itemLen > 2*libMeanMillis){
+    //Don't go closer than 3 mean track lengths
+    if(newTargetMillis-itemLen >2*meanTrackLen){
       newTargetMillis-=itemLen;
       tracksOut.push(item);
     }
   }
 
 
-  var newMeanDist=newTargetMillis/libMeanMillis;
+  //Number of mean track lengths left in unallocated time
+  var newMeanDist=newTargetMillis/meanTrackLen;
 
+  //If n trackLengths remaining, pick n-1 tracks to add
   for(var i=0; i<newMeanDist.floor-1; i++){
     var suitable=false;
+    //Keep picking randomly until we get one +/- 5% of mean
     while(!suitable){
       var rand=Math.floor(Math.random()*numTracks);
       var item=trackLib[rand];
       var itemLen=item.duration;
-      if(itemLen>(libMeanMillis-(libMeanMillis/100)) && 
-          itemLen < libMeanMillis+(libMeanMilis/100)){
+      if(itemLen>(libMeanMillis-(libMeanMillis/20)) && 
+          itemLen < libMeanMillis+(libMeanMillis/20)){
         tracksOut.push(item);
         suitable=true;
         newTargetMillis-=itemLen;
@@ -63,45 +63,50 @@ function evalTime(){
     }
   }
 
+  //Loop through entire library to find final track closest to target
   var found=false;
-  var closeNum=1000000000000;
-  var closest;
+  var closeNum=newTargetMillis;
+  var bestTrack;
   for (var i in trackLib){
-    if(trackLib[i].duration>(newTargetMillis-60) && 
-        trackLib[i].duration<newTargetMillis+60){
-      tracksOut.push(trackLib[i]);
+    var thisTrack=trackLib[i];
+    //Is it within a second?
+    if(thisTrack.duration>(newTargetMillis+1000) && 
+        thisTrack.duration<newTargetMillis+1000){
+
       found=true;
-      newTargetMillis-=trackLib[i].duration;
+      tracksOut.push(thisTrack);
+      newTargetMillis-=thisTrack.duration;
     }
+    //If not, it might still be the closest match
+    //Some invalid tracks have -ve length, check >0
     else{
-      if(newTargetMillis-trackLib[i].duration<closeNum &&
-          newTargetMillis-trackLib[i].duration>0 &&
-          trackLib[i].duration>1000){
-        closeNum=newTargetMillis-trackLib[i];
-        closest=trackLib[i];
+      if(newTargetMillis-thisTrack.duration < closeNum &&
+          newTargetMillis-thisTrack.duration > 0 &&
+          thisTrack.duration > 0){
+
+        closeNum=newTargetMillis-thisTrack.duration;
+        bestTrack=thisTrack;
       }
     }
   }
 
-    if(!found){
-      console.log("notfound");
-      console.log(closest);
-      tracksOut.push(closest);
-      newTargetMillis-=closest.duration;
-    }
+  if(!found){
+    tracksOut.push(bestTrack);
+  }
 
-
-    nameStr=makeName(hours,mins,secs);
-
-    var playlist=new models.Playlist(nameStr);
-
-    for (var i in tracksOut){
-      playlist.add(tracksOut[i].uri);
-    }
-
+  nameStr=makeName(hours,mins,secs);
+  makePlaylist(nameStr, tracksOut);
 }
 
+function makePlaylist(name, tracks){
+  var playlist=new models.Playlist(nameStr);
 
+  for (var i in tracks){
+    playlist.add(tracks[i].uri);
+  }
+}
+
+//There has GOT to be a better way to do this... Stop slacking and work it out
 function makeName(hours, mins, secs){
     var nameStr="Timer: ";
     if(hours>1){
@@ -110,7 +115,7 @@ function makeName(hours, mins, secs){
     else if(hours>0){
       nameStr+=hours+" hour";
     }
-    if(mins>0 || secs>0){
+    if(hours>0 && (mins>0 || secs>0)){
       nameStr+=", ";
     }
     if(mins>1){
@@ -123,19 +128,12 @@ function makeName(hours, mins, secs){
       nameStr+=", ";
     }
     if(secs>1){
-     nameStr+=secs+" seconds.";
+     nameStr+=secs+" seconds";
     }
     else if(secs>0){
-      nameStr+=secs+" second.";
+      nameStr+=secs+" second";
     }
+    nameStr+=".";
 
     return nameStr
 }
-
-
-
-  
-
-
-
-
