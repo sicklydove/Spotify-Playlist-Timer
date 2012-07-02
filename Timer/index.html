@@ -5,29 +5,36 @@
             @import url('sp://import/css/adam.css');
             @import url('sp://import/css/player.css');
             @import url('sp://import/css/ui.css');
+            @import url('sp://import/css/api.css');
+            @import url('sp://import/css/list.css');
             @import url('sp://import/css/shared.css');
-            @import url('sp://playlisty/css/default.css');
+            @import url('sp://timer/css/default.css');
             h1, ul {margin:0 0 30px;}
             a:hover {color:#83be20;}
           </style>
-        <script src='sp://Timer/js/scripts.js'></script>
-        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src='sp://timer/js/jQuery.js'></script>
+        <script src='sp://timer/js/scripts.js'></script>
           </script>
     </head>
     <body>
-        <div id="wrapper">
-          <script>
-            init();
-          </script>
-            <form id="timeInput" onsubmit="evalTime(); return false;">
-              <input type="number" name="hours" id="hours" min="0" />
-              <input type="number" name="minutes" id="mins" min="0" max="60" />
-              <input type="number" name="seconds" id="secs" min="0" max="60" />
-              <button class="new-button">
-              <input type="submit" />
-                Button</a>              
-            </form>>
-        </div><!-- /wrapper -->
+      <div id="wrapper">
+        <h1>Spotify Playlist Timer</h1>
+        <script>init();</script>
+        <div class="mainContainer">
+        <form id="timeInput" onsubmit="evalTime(); return false;">
+          <div class="sideForm">
+            <ul>
+              <li><input type="number" name="hours" id="hours" min="0" placeholder="Hours" /></li>
+              <li><input type="number" name="minutes" id="mins" min="0" max="60" placeholder="Minutes" /></li>
+              <li><input type="number" name="seconds" id="secs" min="0" max="60" placeholder="Seconds" /></li>
+            </ul>
+          </div>
+          <div class="dropField">Drop a playlist here to restrict track selection.</div>
+          <button id="submitBtn" class="sp-button" disabled>Generate</a>
+        </form>
+        </div>
+        <div id="player"></div>
+      </div>
     </body>
 </html>
 

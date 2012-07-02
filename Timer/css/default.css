@@ -1,28 +1,87 @@
-#dropZone
-{
-    border-radius: 5px;
-    border: 2px dashed #ccc;
-    padding: 50px 0;
-    text-align: center;
-    font-size: 18px;
-    color: #555;
-    margin: 50px auto;
-}
- 
-#dropZone.hover
-{
-    border-color: #aaa;
-    background-color: #ddd;
-}
- 
-#dropZone.error
-{
-    border-color: #f00;
-    background-color: #faa;
+#wrapper{
+  max-width:800px;
+  //background-color: rgba(207, 207, 207, 0.4);
+  margin-left:auto;
+  margin-right:auto;
 }
 
-#dropZone.okay
-{
-    border-color: #0f0;
-    background-color: #d2e5d2;
+#wrapper h1{
+  text-align:center;
+  padding-top:50px;
+  padding-bottom:50px;
+  margin-bottom: 0;
+  font-size: 55px;
+  line-height: 1;
+  letter-spacing: -1px;
+  color:inherit;
+}
+
+#wrapper h2{
+  text-align:center;
+  padding-top:5px;
+  padding-bottom:5px;
+  margin-bottom: 7px;
+  font-size: 25px;
+  line-height: 1;
+  letter-spacing: -1px;
+  color:inherit;
+}
+
+.mainContainer{
+  width:100%;
+  height:200px;
+  display:block;
+}
+
+.mainContainer ul{
+  padding-bottom:0px;
+  margin-bottom:0px;
+}
+.dropField{
+  float:right;
+  width:80%;
+  height:112px;
+  display:inline;
+  text-align:center;
+  border-radius:5px;
+  border: 2px dashed #ccc;
+  font-size:28px;
+  line-height:105px;
+}
+
+.sideForm{
+  width:15%;
+  display:inline;
+  float:left;
+}
+
+.mainContainer button{
+  margin-top:10px;
+  font-size:28px;
+  width:100%;
+  height:50px;
+}
+
+.sideForm input{
+  width:100%;
+  color:inherit;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  -webkit-box-shadow: 2px 2px 3px #666;
+  box-shadow: 2px 2px 3px #666;
+  font-size: 20px;
+  padding: 4px 7px;
+  outline: 0;
+  -webkit-appearance: none;
+}
+.sideForm input:focus {
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  outline: thin dotted \9;
+}
+.sideForm input[type=number]::-webkit-inner-spin-button,
+.sideForm input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }

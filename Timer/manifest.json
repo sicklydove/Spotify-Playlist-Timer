@@ -8,6 +8,9 @@
 	"AppName": {
 		"en": "timer"
 	},
+  "AcceptedLinkTypes": [
+    "playlist"
+  ],
 	"BundleIdentifier": "timer",
 	"BundleType": "Application",
 	"BundleVersion": "0.1",

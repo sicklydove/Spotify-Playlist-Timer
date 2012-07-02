@@ -1,16 +1,85 @@
+//TODO DISABLE REPEATS
+
 var sp;
 var models;
 var player;
 var lib;
+var views;
+var restrictedLib;
+
+
+$(function(){
+	var drop = document.querySelector('.dropField');
+	drop.addEventListener('dragenter', handleDragEnter, false);
+	drop.addEventListener('dragover', handleDragOver, false);
+	drop.addEventListener('dragleave', handleDragLeave, false);
+	drop.addEventListener('drop', handleDrop, false);
+
+	function handleDragEnter(e) {
+		this.style.background = '#444444';
+	}
+	
+	function handleDragOver(e) {
+		e.preventDefault();
+		e.dataTransfer.dropEffect = 'copy';
+		return false;
+	}
+
+	function handleDragLeave(e) {
+		this.style.background = '#333333';
+	}
+	
+	function handleDrop(e) {
+		this.style.background = '#444444';
+		var uri = e.dataTransfer.getData('Text');
+    restrictedLib=models.Playlist.fromURI(uri);
+    this.innerHTML = "Using playlist: "+restrictedLib.name
+		}
+	}
+  );
+
+$(function(){
+  $("form input").change(function(){
+
+    var form=document.getElementById("timeInput");
+    $(form.submitBtn).attr("disabled",true);
+
+    if(form.hours.value || form.mins.value || form.secs.value){
+      $(form.submitBtn).attr("disabled",false);
+    }
+
+  });
+});
 
 function init(){
    sp = getSpotifyApi(1);
    models = sp.require("sp://import/scripts/api/models");
+   views = sp.require("sp://import/scripts/api/views");
    player = models.player;
-   lib = models.library
+   lib = models.library;
 }
 
+function sanitiseInp(){
+  //TODO Jquery this...
+  var form=document.getElementById("timeInput");
+
+  if(!form.hours.value){
+    form.hours.value=0;
+  }
+  if(!form.mins.value){
+    form.mins.value=0;
+  }
+  if(!form.secs.value){
+    form.secs.value=0;
+  }
+  
+}
+
+
 function evalTime(){
+
+  sanitiseInp();
+
   var tracksOut=[];
   var form=document.getElementById("timeInput");
 
@@ -20,7 +89,14 @@ function evalTime(){
 
   var targetSecs=secs+(60*mins)+(3600*hours);
   var targetMillis=targetSecs*1000;
-  var trackLib=lib.tracks;
+
+  if(restrictedLib){
+    trackLib=restrictedLib.tracks;
+  }
+  else{
+    trackLib=lib.tracks;
+  }
+
   var numTracks=trackLib.length;
 
   var libTotalMillis=0;
@@ -36,26 +112,25 @@ function evalTime(){
     var item=trackLib[rand];
     var itemLen=item.duration;
     //Don't go closer than 3 mean track lengths
-    if(newTargetMillis-itemLen >2*meanTrackLen){
+    if((newTargetMillis-itemLen >2*meanTrackLen)){
       newTargetMillis-=itemLen;
       tracksOut.push(item);
     }
   }
 
-
   //Number of mean track lengths left in unallocated time
-  var newMeanDist=newTargetMillis/meanTrackLen;
+  var newMeanDist=Math.floor(newTargetMillis/meanTrackLen);
 
   //If n trackLengths remaining, pick n-1 tracks to add
-  for(var i=0; i<newMeanDist.floor-1; i++){
+  for(var i=0; i<newMeanDist-1; i++){
     var suitable=false;
     //Keep picking randomly until we get one +/- 5% of mean
     while(!suitable){
       var rand=Math.floor(Math.random()*numTracks);
       var item=trackLib[rand];
       var itemLen=item.duration;
-      if(itemLen>(libMeanMillis-(libMeanMillis/20)) && 
-          itemLen < libMeanMillis+(libMeanMillis/20)){
+      if(itemLen>(meanTrackLen-(meanTrackLen/20)) && 
+          itemLen < meanTrackLen+(meanTrackLen/20)){
         tracksOut.push(item);
         suitable=true;
         newTargetMillis-=itemLen;
@@ -72,19 +147,19 @@ function evalTime(){
     //Is it within a second?
     if(thisTrack.duration>(newTargetMillis+1000) && 
         thisTrack.duration<newTargetMillis+1000){
-
       found=true;
+      closeNum=0;
       tracksOut.push(thisTrack);
       newTargetMillis-=thisTrack.duration;
     }
     //If not, it might still be the closest match
     //Some invalid tracks have -ve length, check >0
     else{
-      if(newTargetMillis-thisTrack.duration < closeNum &&
-          newTargetMillis-thisTrack.duration > 0 &&
-          thisTrack.duration > 0){
+      if(Math.abs(newTargetMillis-thisTrack.duration) < closeNum &&
+          thisTrack.duration > 0 &&
+          tracksOut.indexOf(thisTrack)==-1){
 
-        closeNum=newTargetMillis-thisTrack.duration;
+        closeNum=Math.abs(newTargetMillis-thisTrack.duration);
         bestTrack=thisTrack;
       }
     }
@@ -94,16 +169,36 @@ function evalTime(){
     tracksOut.push(bestTrack);
   }
 
+  appendAccuracyHTML(closeNum);
+
   nameStr=makeName(hours,mins,secs);
   makePlaylist(nameStr, tracksOut);
 }
 
-function makePlaylist(name, tracks){
-  var playlist=new models.Playlist(nameStr);
-
-  for (var i in tracks){
-    playlist.add(tracks[i].uri);
+function appendAccuracyHTML(distance){
+  var playerHTML= document.getElementById('player');
+  if(distance==0){
+    playerHTML+='<h2>Done! Perfect time match</h2>';
   }
+  else{
+    secs=distance/1000;
+    timeStr=" second";
+    if(secs>1){
+      timeStr+="s"
+    }
+    playerHTML.innerHTML='<h2>Done, accurate to within '+secs+ timeStr+'!</h2>';
+  }
+}
+
+function makePlaylist(name, tracks){
+  var tempPlaylist = new models.Playlist();
+  for (var i in tracks){
+    tempPlaylist.add(tracks[i].uri);
+  }
+  var playlist=new views.List(tempPlaylist);
+  var playerHTML= document.getElementById('player');
+  playerHTML.appendChild(playlist.node);
+
 }
 
 //There has GOT to be a better way to do this... Stop slacking and work it out
