@@ -169,36 +169,44 @@ function evalTime(){
     tracksOut.push(bestTrack);
   }
 
-  appendAccuracyHTML(closeNum);
+  accuracyHTML=getAccuracyHTML(closeNum);
 
   nameStr=makeName(hours,mins,secs);
-  makePlaylist(nameStr, tracksOut);
+
+  pl=getPlaylist(nameStr, tracksOut);
+
+  if ($('#player')){
+    $('#player').remove();
+  }
+  $('#wrapper').append(accuracyHTML);
+  $('#player').append(pl.node);
 }
 
-function appendAccuracyHTML(distance){
-  var playerHTML= document.getElementById('player');
+function getAccuracyHTML(distance){
+  var playerHTML= '<div id="player">';
   if(distance==0){
     playerHTML+='<h2>Done! Perfect time match</h2>';
   }
   else{
     secs=distance/1000;
     timeStr=" second";
-    if(secs>1){
+    if(secs!=1){
       timeStr+="s"
     }
-    playerHTML.innerHTML='<h2>Done, accurate to within '+secs+ timeStr+'!</h2>';
+    playerHTML+='<h2>Done, accurate to within ' + secs + timeStr + '!</h2>';
   }
+  playerHTML+='</div>';
+  return(playerHTML);
 }
 
-function makePlaylist(name, tracks){
+function getPlaylist(name, tracks){
   var tempPlaylist = new models.Playlist();
   for (var i in tracks){
     tempPlaylist.add(tracks[i].uri);
   }
   var playlist=new views.List(tempPlaylist);
   var playerHTML= document.getElementById('player');
-  playerHTML.appendChild(playlist.node);
-
+  return playlist;
 }
 
 //There has GOT to be a better way to do this... Stop slacking and work it out
