@@ -38,15 +38,27 @@ $(function(){
 	}
   );
 
+function isNumOrNull(i){
+  if(!(isNaN(parseInt(i))) || i===''){
+    return true
+  }
+  return false
+}
+
 $(function(){
   $("form input").change(function(){
+   var h=($('#hours').val());
+   var m=($('#mins').val());
+   var s=($('#secs').val());
 
-    var form=document.getElementById("timeInput");
-    $(form.submitBtn).attr("disabled",true);
+   var form=$("#timeInput");
+   $('#submitBtn').attr("disabled",true);
 
-    if(form.hours.value || form.mins.value || form.secs.value){
-      $(form.submitBtn).attr("disabled",false);
+   if(isNumOrNull(h) && isNumOrNull(m) && isNumOrNull(s)){
+    if(parseInt(h)>0 || parseInt(m)>0 || parseInt(s)>0){
+      $('#submitBtn').attr("disabled",false);
     }
+   }
 
   });
 });
@@ -61,16 +73,15 @@ function init(){
 
 function sanitiseInp(){
   //TODO Jquery this...
-  var form=document.getElementById("timeInput");
 
-  if(!form.hours.value){
-    form.hours.value=0;
+  if(!$('#hours').val()){
+    $('#hours').val(0);
   }
-  if(!form.mins.value){
-    form.mins.value=0;
+  if(!$('#mins').val()){
+    $('#mins').val(0);
   }
-  if(!form.secs.value){
-    form.secs.value=0;
+  if(!$('#secs').val()){
+    $('#secs').val(0);
   }
   
 }
