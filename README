@@ -1,11 +1,11 @@
-This app is currently *VERY* work-in-progress.
+***
+**
+*
+SPOTIFY PLAYLIST TIMER - LAURIE JAMES - LAURIE@FARRAGAR.COM
+*
+**
+***
 
-Source (scripts.js) is a proof-of-concept algorithm. It works, it's fast, and it's accurate (+/-2 seconds, based on my ~4k tracks playlist).
+Inspired by this comic: http://imgur.com/zzB8a this app generates playlists for arbritrary lengths of time. Running in ~O(N) time, playlists are generated extremely quick and accurately, though are non-deterministic for a given library/time pair.
 
-BUT: No real frontend, & code is messy.
-
-
-TODO: 
-Make a frontend!
-Clean up code
-Use absolute values when testing distance from optimal
+Requires a Spotify dev account.
