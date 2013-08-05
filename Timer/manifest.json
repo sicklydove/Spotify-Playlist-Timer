@@ -1,24 +1,24 @@
 {
 	"AppDescription": {
-		"en": "A music-based timer"
+		"en": "A timer app for Spotify Apps API"
 	},
 	"AppIcon": {
 		"36x18": "tutorial.png"
 	},
 	"AppName": {
-		"en": "timer"
+		"en": "Timer"
 	},
-  "AcceptedLinkTypes": [
-    "playlist"
-  ],
 	"BundleIdentifier": "timer",
 	"BundleType": "Application",
 	"BundleVersion": "0.1",
-	"RequiredInterface": 1,
-	"RequiredPermissions": [
-	],
+	"Dependencies": {
+	  "api": "0.2.3",
+	  "util": "0.1.0",
+	  "resources": "0.2.2"
+  },
 	"SupportedLanguages": [
 		"en"
 	],
-	"VendorIdentifier": "farragar"
+	"VendorIdentifier": "com.farragar"
 }
+

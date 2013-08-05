@@ -173,7 +173,7 @@ function findTracks(){
     trackList.push(bestTrack);
   }
 
-  accuracyHTML=getAccuracyHTML(closest);
+  accuracyHTML=getAccuracyHTML(closeNum);
 
   nameStr=makeName(hours,mins,secs);
 
