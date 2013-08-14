@@ -75,6 +75,12 @@ function sanitise(){
   if(!$('#mins').val()){
     $('#mins').val(0);
   }
+  elif($('mins').val()>60){
+	  console.log('ah');
+    var old=$('#hours').val();
+    var newh=old+=($('#mins').val()%60);
+    $('#hours').val(newh);
+  }
   if(!$('#secs').val()){
     $('#secs').val(0);
   }
@@ -173,7 +179,7 @@ function findTracks(){
     trackList.push(bestTrack);
   }
 
-  accuracyHTML=getAccuracyHTML(closeNum);
+  accuracyHTML=getAccuracyHTML(closest);
 
   nameStr=makeName(hours,mins,secs);
 

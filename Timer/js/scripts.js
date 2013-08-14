@@ -1,4 +1,4 @@
-//TODO DISABLE REPEATS
+//TODO DISABLE REPEATS?
 
 var sp;
 var models;
@@ -78,7 +78,21 @@ function sanitise(){
   if(!$('#secs').val()){
     $('#secs').val(0);
   }
-  
+
+  var h=parseInt($('#hours').val());
+  var m=parseInt($('#mins').val());
+  var s=parseInt($('#secs').val());
+
+  if(m>60){
+  	var extra=Math.floor(m/60);
+	$('#mins').val(m%60);
+	$('#hours').val(h+=extra);
+  }
+  if(s>60){
+  	var extra=Math.floor(s/60);
+	$('#secs').val(s%60);
+	$('#mins').val(m+=extra);
+  }
 }
 
 
