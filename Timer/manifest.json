@@ -3,7 +3,7 @@
 		"en": "A timer app for Spotify Apps API"
 	},
 	"AppIcon": {
-		"36x18": "tutorial.png"
+		"18x18": "icon.png"
 	},
 	"AppName": {
 		"en": "Timer"
