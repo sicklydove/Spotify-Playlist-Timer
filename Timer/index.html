@@ -4,7 +4,6 @@
         <style>
             @import url('sp://import/css/adam.css');
             @import url('sp://import/css/player.css');
-            @import url('sp://import/css/ui.css');
             @import url('sp://import/css/api.css');
             @import url('sp://import/css/list.css');
             @import url('sp://import/css/shared.css');
@@ -18,10 +17,10 @@
     </head>
     <body>
       <div id="wrapper">
-        <h1>Spotify Playlist Timer</h1>
+        <h1>Playlist Timer</h1>
         <script>init();</script>
         <div class="mainContainer">
-        <form id="timeInput" onsubmit="findTracks(); return false;">
+        <form id="timeInput" onsubmit="handleClick(); return false;">
           <div class="sideForm">
             <ul>
               <li><input type="text" name="hours" id="hours" placeholder="Hours" /></li>
@@ -29,7 +28,7 @@
               <li><input type="text" name="seconds" id="secs" placeholder="Seconds" /></li>
             </ul>
           </div>
-          <div class="dropField">Drop a playlist here to restrict track selection.</div>
+          <div class="dropField">Only use tracks from this playlist.</div>
           <button id="submitBtn" class="sp-button" disabled>Generate</a>
         </form>
         </div>
